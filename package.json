@@ -6,7 +6,7 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.3"
-  }
+  },
   "name": "delivery-system-back-end",
   "version": "1.0.0",
   "main": "server.js",
