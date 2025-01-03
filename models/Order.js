@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { type } = require('os')
 const Shop = require('./Shop')
 const Driver = require('./Driver')
 
@@ -20,7 +19,10 @@ const orderSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    deliveryTime: {
+    pickTime: {
+      type: Date
+    },
+    dropTime: {
       type: Date
     },
     deliveryPrice: {

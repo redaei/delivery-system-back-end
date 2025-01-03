@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { type } = require('os')
 const Admin = require('./Admin')
 
 const driverSchema = new mongoose.Schema(
