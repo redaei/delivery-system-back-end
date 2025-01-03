@@ -45,4 +45,79 @@ router.post('/driverSignin', async (req, res) => {
   }
 })
 
+router.get('/', async (req, res) => {
+  try {
+    const drivers = await Driver.find({})
+    return res.status(200).json({ drivers })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Shops data cannot be retrieved!' })
+  }
+})
+
+router.post('/', async (req, res) => {
+  try {
+    const driverInDB = await Driver.findOne({
+      driverUserName: req.body.driverUserName
+    })
+    if (driverInDB)
+      return res.status(409).json({ error: 'Username already taken.' })
+
+    const driverData = req.body
+    const hashedPassword = await bcrypt.hash(driverData.password, 10)
+    driverData.password = hashedPassword
+
+    const newDriver = new Driver(driverData)
+    await newDriver.save()
+
+    return res.status(201).json({ driver: newDriver })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Driver cannot be created!' })
+  }
+})
+
+router.get('/:id', async (req, res) => {
+  try {
+    const driver = await Driver.findById(req.params.id)
+    return res.status(200).json({ driver })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Driver data cannot be retrieved!' })
+  }
+})
+
+router.put('/:id', async (req, res) => {
+  try {
+    // Check if the password updated
+    if (req.body.password) {
+      if (req.body.password !== req.body.confirmPassword) {
+        return res.status(400).json({ error: 'Passwords do not match' })
+      }
+      const hashedPassword = await bcrypt.hash(req.body.password, 10)
+      req.body.password = hashedPassword
+    }
+
+    const driver = await Driver.findByIdAndUpdate(req.params.id, req.body)
+    return res
+      .status(200)
+      .json({ driver, message: 'Driver updated successfully!' })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Driver cannot be updated!' })
+  }
+})
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const driver = await Driver.findByIdAndDelete(req.params.id)
+    return res
+      .status(200)
+      .json({ driver, message: 'Driver deleted successfully!' })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Driver cannot be deleted!' })
+  }
+})
+
 module.exports = router
