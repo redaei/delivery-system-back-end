@@ -43,4 +43,14 @@ router.post('/shopSignin', async (req, res) => {
   }
 })
 
+router.get('/shopProfile', async (req, res) => {
+  try {
+    const shop = await Shop.findById(req.user._id)
+    return res.status(201).json(shop)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Something went wrong!' })
+  }
+})
+
 module.exports = router
