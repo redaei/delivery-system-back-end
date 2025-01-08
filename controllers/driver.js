@@ -45,4 +45,14 @@ router.post('/driverSignin', async (req, res) => {
   }
 })
 
+router.get('/driverProfile', async (req, res) => {
+  try {
+    const driver = await Driver.findById(req.user._id)
+    return res.status(201).json(shop)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Something went wrong!' })
+  }
+})
+
 module.exports = router
