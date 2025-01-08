@@ -45,6 +45,7 @@ router.post('/driverSignin', async (req, res) => {
   }
 })
 
+<<<<<<< HEAD
 router.get('/', async (req, res) => {
   try {
     const drivers = await Driver.find({})
@@ -117,6 +118,15 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     console.error(error)
     return res.status(500).json({ error: 'Driver cannot be deleted!' })
+=======
+router.get('/driverProfile', async (req, res) => {
+  try {
+    const driver = await Driver.findById(req.user._id)
+    return res.status(201).json(shop)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Something went wrong!' })
+>>>>>>> 8706a2151f5234f5af410754150284e87a578aa7
   }
 })
 
