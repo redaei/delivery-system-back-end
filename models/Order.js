@@ -17,11 +17,18 @@ const orderSchema = new mongoose.Schema(
       type: Date
     },
     orderStatus: {
-      type: Boolean,
-      default: false
+      type: String,
+      enum: ['Pending', 'In progress', 'Delivered'],
+      default: 'Pending'
     },
     deliveryTime: {
       type: Date
+    },
+    pickTime: {
+      type: Date
+    },
+    description: {
+      type: String
     },
     deliveryPrice: {
       type: Number
