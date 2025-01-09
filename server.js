@@ -9,7 +9,7 @@ const adminRouter = require('./controllers/admin')
 const { verifyToken } = require('./middleware/jwtUtils')
 const shopAuth = require('./controllers/shop')
 const driverAuth = require('./controllers/driver')
-
+const order = require('./controllers/order')
 mongoose.connect(process.env.MONGODB_URI)
 mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`)
@@ -23,7 +23,7 @@ app.use('/auth', adminAuthRouter)
 app.use('/admin', verifyToken, adminRouter)
 app.use('/shop', shopAuth)
 app.use('/driver', driverAuth)
-
+app.use('/order', order)
 app.listen(PORT, () => {
   console.log('The express app is ready!', PORT)
 })
