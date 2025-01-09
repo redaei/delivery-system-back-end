@@ -1,4 +1,4 @@
-const { signToken } = require('../middleware/jwtUtils')
+const { signToken, verifyToken } = require('../middleware/jwtUtils')
 const Driver = require('../models/Driver')
 const bcrypt = require('bcrypt')
 const router = require('express').Router()
@@ -38,14 +38,13 @@ router.post('/driverSignin', async (req, res) => {
     const matched = bcrypt.compareSync(password, driver.password)
     if (!matched) return res.status(400).json({ error: 'Bad request.' })
     const token = signToken(driver)
-    return res.status(201).json({ token })
+    return res.status(201).json({ token, driver })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Something went wrong!' })
   }
 })
 
-<<<<<<< HEAD
 router.get('/', async (req, res) => {
   try {
     const drivers = await Driver.find({})
@@ -77,7 +76,15 @@ router.post('/', async (req, res) => {
     return res.status(500).json({ error: 'Driver cannot be created!' })
   }
 })
-
+router.get('/driverProfile', verifyToken, async (req, res) => {
+  try {
+    const driver = await Driver.findById(req.user._id)
+    return res.status(201).json(shop)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Something went wrong!' })
+  }
+})
 router.get('/:id', async (req, res) => {
   try {
     const driver = await Driver.findById(req.params.id)
@@ -118,15 +125,6 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     console.error(error)
     return res.status(500).json({ error: 'Driver cannot be deleted!' })
-=======
-router.get('/driverProfile', async (req, res) => {
-  try {
-    const driver = await Driver.findById(req.user._id)
-    return res.status(201).json(shop)
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Something went wrong!' })
->>>>>>> 8706a2151f5234f5af410754150284e87a578aa7
   }
 })
 

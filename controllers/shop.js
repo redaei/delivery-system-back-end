@@ -1,4 +1,4 @@
-const { signToken } = require('../middleware/jwtUtils')
+const { signToken, verifyToken } = require('../middleware/jwtUtils')
 const Shop = require('../models/Shop')
 const bcrypt = require('bcrypt')
 const router = require('express').Router()
@@ -36,20 +36,30 @@ router.post('/shopSignin', async (req, res) => {
     const matched = bcrypt.compareSync(password, shop.password)
     if (!matched) return res.status(400).json({ error: 'Bad request.' })
     const token = signToken(shop)
-    return res.status(201).json({ token })
+    return res.status(201).json({ token, role: 'shop' })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Something went wrong!' })
   }
 })
 
-router.get('/shopProfile', async (req, res) => {
+router.get('/shopProfile', verifyToken, async (req, res) => {
   try {
     const shop = await Shop.findById(req.user._id)
     return res.status(201).json(shop)
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Something went wrong!' })
+  }
+})
+
+router.get('/', async (req, res) => {
+  try {
+    const shops = await Shop.find({})
+    return res.status(200).json({ shops })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Shops data cannot be retrieved!' })
   }
 })
 
