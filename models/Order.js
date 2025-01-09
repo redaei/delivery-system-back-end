@@ -16,14 +16,21 @@ const orderSchema = new mongoose.Schema(
       type: Date
     },
     orderStatus: {
-      type: Boolean,
-      default: false
+      type: String,
+      enum: ['Pending', 'In progress', 'Delivered'],
+      default: 'Pending'
     },
     pickTime: {
       type: Date
     },
     dropTime: {
       type: Date
+    },
+    pickTime: {
+      type: Date
+    },
+    description: {
+      type: String
     },
     deliveryPrice: {
       type: Number
