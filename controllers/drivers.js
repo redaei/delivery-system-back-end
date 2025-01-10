@@ -38,7 +38,7 @@ router.post('/driverSignin', async (req, res) => {
     const matched = bcrypt.compareSync(password, driver.password)
     if (!matched) return res.status(400).json({ error: 'Bad request.' })
     const token = signToken(driver)
-    return res.status(201).json({ token, driver })
+    return res.status(201).json({ token, role: 'Driver' })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Something went wrong!' })
@@ -135,11 +135,9 @@ router.put('/:id/:action', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const driver = await Driver.findByIdAndDelete(req.params.id)
-    return res
-      .status(200)
-      .json({
-        message: `Successfully deleted driver with name: ${driver.driverName}`
-      })
+    return res.status(200).json({
+      message: `Successfully deleted driver with name: ${driver.driverName}`
+    })
   } catch (error) {
     console.error(error)
     return res.status(500).json({ error: 'Driver cannot be deleted!' })

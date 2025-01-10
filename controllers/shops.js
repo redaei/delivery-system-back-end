@@ -36,7 +36,7 @@ router.post('/shopSignin', async (req, res) => {
     const matched = bcrypt.compareSync(password, shop.password)
     if (!matched) return res.status(400).json({ error: 'Bad request.' })
     const token = signToken(shop)
-    return res.status(201).json({ token, role: 'shop' })
+    return res.status(201).json({ token, role: 'Shop' })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Something went wrong!' })
