@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { type } = require('os')
 const Admin = require('./Admin')
 
 const shopSchema = new mongoose.Schema(
@@ -27,6 +26,9 @@ const shopSchema = new mongoose.Schema(
     status: {
       type: Boolean,
       default: false
+    },
+    openTime: {
+      type: String
     }
   },
   { timestamps: true }

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { type } = require('os')
 const Shop = require('./Shop')
 const Driver = require('./Driver')
 
@@ -13,15 +12,29 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: Driver
     },
+    orderNumber: {
+      type: String,
+      unique: true,
+      required: true
+    },
     orderDate: {
       type: Date
     },
     orderStatus: {
       type: String,
-      enum: ['Pending', 'In progress', 'Delivered'],
+      enum: [
+        'Pending',
+        'Rejected',
+        'Accepted',
+        'Out for delivery',
+        'Delivered'
+      ],
       default: 'Pending'
     },
-    deliveryTime: {
+    pickTime: {
+      type: Date
+    },
+    dropTime: {
       type: Date
     },
     pickTime: {
