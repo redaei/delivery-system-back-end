@@ -63,4 +63,46 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.get('/:id', async (req, res) => {
+  try {
+    const shop = await Shop.findById(req.params.id)
+    return res.status(200).json({ shop })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Shop data cannot be retrieved!' })
+  }
+})
+
+router.put('/:id', async (req, res) => {
+  try {
+    if (req.body.password) {
+      if (req.body.password !== req.body.confirmPassword) {
+        return res.status(400).json({ error: 'Passwords do not match' })
+      }
+      const hashedPassword = await bcrypt.hash(req.body.password, 10)
+      req.body.password = hashedPassword
+    }
+
+    const shop = await Shop.findByIdAndUpdate(req.params.id, req.body, {
+      new: true
+    })
+    return res.status(200).json({ shop })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Shop data cannot be updated!' })
+  }
+})
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const shop = await Shop.findByIdAndDelete(req.params.id)
+    return res.status(200).json({
+      message: `Successfully deleted shop with Name: ${shop.shopUserName}`
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Shop data cannot be deleted!' })
+  }
+})
+
 module.exports = router

@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
 router.get('/driverProfile', verifyToken, async (req, res) => {
   try {
     const driver = await Driver.findById(req.user._id)
-    return res.status(201).json(shop)
+    return res.status(201).json(driver)
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Something went wrong!' })
@@ -97,7 +97,6 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    // Check if the password updated
     if (req.body.password) {
       if (req.body.password !== req.body.confirmPassword) {
         return res.status(400).json({ error: 'Passwords do not match' })
@@ -106,7 +105,9 @@ router.put('/:id', async (req, res) => {
       req.body.password = hashedPassword
     }
 
-    const driver = await Driver.findByIdAndUpdate(req.params.id, req.body)
+    const driver = await Driver.findByIdAndUpdate(req.params.id, req.body, {
+      new: true
+    })
     return res
       .status(200)
       .json({ driver, message: 'Driver updated successfully!' })
@@ -116,12 +117,29 @@ router.put('/:id', async (req, res) => {
   }
 })
 
+router.put('/:id/:action', async (req, res) => {
+  try {
+    const driver = await Driver.findById(req.params.id)
+    if (!driver) {
+      return res.status(404).json({ error: 'Driver not found!' })
+    }
+    driver.status = req.params.action
+    await driver.save()
+    return res.status(200).json({ driver })
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ error: 'Driver status cannot be updated!' })
+  }
+})
+
 router.delete('/:id', async (req, res) => {
   try {
     const driver = await Driver.findByIdAndDelete(req.params.id)
     return res
       .status(200)
-      .json({ driver, message: 'Driver deleted successfully!' })
+      .json({
+        message: `Successfully deleted driver with name: ${driver.driverName}`
+      })
   } catch (error) {
     console.error(error)
     return res.status(500).json({ error: 'Driver cannot be deleted!' })

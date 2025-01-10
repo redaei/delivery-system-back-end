@@ -26,6 +26,9 @@ const shopSchema = new mongoose.Schema(
     status: {
       type: Boolean,
       default: false
+    },
+    openTime: {
+      type: String
     }
   },
   { timestamps: true }
