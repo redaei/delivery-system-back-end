@@ -100,11 +100,9 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id)
-    return res
-      .status(200)
-      .json({
-        message: `Successfully deleted order with Order Number: ${order.orderNumber}`
-      })
+    return res.status(200).json({
+      message: `Successfully deleted order with Order Number: ${order.orderNumber}`
+    })
   } catch (error) {
     console.error(error)
     return res.status(500).json({ error: 'Order cannot be deleted!' })
