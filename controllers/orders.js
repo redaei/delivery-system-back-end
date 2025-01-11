@@ -1,6 +1,7 @@
 const Shop = require('../models/Shop')
 const Driver = require('../models/Driver')
 const Order = require('../models/Order')
+const { verifyToken } = require('../middleware/jwtUtils')
 const router = require('express').Router()
 
 router.get('/', async (req, res) => {
@@ -10,6 +11,30 @@ router.get('/', async (req, res) => {
   } catch (error) {
     console.error(error)
     return res.status(500).json({ error: 'Orders data cannot be retrieved!' })
+  }
+})
+
+router.get('/driver', verifyToken, async (req, res) => {
+  try {
+    const orders = await Order.find({ driverId: req.user._id })
+      .populate('driverId')
+      .populate('shopId')
+    return res.status(201).json(orders)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Orders data cannot be retrieved!' })
+  }
+})
+
+router.get('/shop', verifyToken, async (req, res) => {
+  try {
+    const orders = await Order.find({ shopId: req.user._id })
+      .populate('driverId')
+      .populate('shopId')
+    return res.status(201).json(orders)
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: 'Orders data cannot be retrieved!' })
   }
 })
 
@@ -25,33 +50,10 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.get('/driver', async (req, res) => {
-  try {
-    const orders = await Order.find({ driverId: req.user._id })
-      .populate('driverId')
-      .populate('shopId')
-    return res.status(201).json(orders)
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Orders data cannot be retrieved!' })
-  }
-})
-
-router.get('/shop', async (req, res) => {
-  try {
-    const orders = await Order.find({ shopId: req.user._id })
-      .populate('driverId')
-      .populate('shopId')
-    return res.status(201).json(orders)
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Orders data cannot be retrieved!' })
-  }
-})
-
-router.post('/', async (req, res) => {
+router.post('/', verifyToken, async (req, res) => {
   try {
     req.body.shopId = req.user._id
+
     req.body.orderDate = new Date()
 
     const lastOrder = await Order.findOne().sort({ orderNumber: -1 })
@@ -59,7 +61,7 @@ router.post('/', async (req, res) => {
       const orderNumber = lastOrder.orderNumber.split('-')[1]
       req.body.orderNumber = `ORD-${parseInt(orderNumber) + 1}`
     } else {
-      req.body.orderNumber = `ORD-100001`
+      req.body.orderNumber = 'ORD-100001'
     }
 
     const order = await Order.create(req.body)
@@ -70,7 +72,7 @@ router.post('/', async (req, res) => {
   }
 })
 
-router.put('/:id/:action', async (req, res) => {
+router.put('/:id/:action', verifyToken, async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
     if (!order) {
@@ -86,7 +88,7 @@ router.put('/:id/:action', async (req, res) => {
   }
 })
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyToken, async (req, res) => {
   try {
     const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
       new: true
@@ -97,7 +99,7 @@ router.put('/:id', async (req, res) => {
     return res.status(500).json({ error: 'Order cannot be updated!' })
   }
 })
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', verifyToken, async (req, res) => {
   try {
     const order = await Order.findByIdAndDelete(req.params.id)
     return res.status(200).json({
