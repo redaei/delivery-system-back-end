@@ -55,6 +55,7 @@ router.post('/', verifyToken, async (req, res) => {
     req.body.shopId = req.user._id
 
     req.body.orderDate = new Date()
+    console.log(req.body)
 
     const lastOrder = await Order.findOne().sort({ orderNumber: -1 })
     if (lastOrder) {
