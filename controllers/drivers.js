@@ -106,7 +106,7 @@ router.put('/:id', async (req, res) => {
     }
 
     const driver = await Driver.findByIdAndUpdate(req.params.id, req.body, {
-      status: true
+      new: true
     })
     return res
       .status(200)
