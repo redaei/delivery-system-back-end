@@ -84,7 +84,7 @@ router.put('/:id', async (req, res) => {
     }
 
     const shop = await Shop.findByIdAndUpdate(req.params.id, req.body, {
-      status: true
+      new: true
     })
     return res.status(200).json({ shop })
   } catch (error) {
