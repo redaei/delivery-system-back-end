@@ -38,7 +38,7 @@ router.post('/driverSignin', async (req, res) => {
     const matched = bcrypt.compareSync(password, driver.password)
     if (!matched) return res.status(400).json({ error: 'Bad request.' })
     const token = signToken(driver)
-    return res.status(201).json({ token, role: 'Driver' })
+    return res.status(201).json({ token, role: 'Driver', userId: driver._id })
   } catch (error) {
     console.error(error)
     res.status(500).json({ error: 'Something went wrong!' })
