@@ -21,8 +21,8 @@ app.use(cors())
 // Routes go here
 app.use('/auth', adminAuthController)
 app.use('/admin', verifyToken, adminController)
-app.use('/shops', verifyToken, shopController)
-app.use('/drivers', verifyToken, driverController)
+app.use('/shops', shopController)
+app.use('/drivers', driverController)
 app.use('/orders', verifyToken, orderController)
 app.listen(PORT, () => {
   console.log('The express app is ready!', PORT)
