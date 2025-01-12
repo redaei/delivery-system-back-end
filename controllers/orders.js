@@ -78,6 +78,14 @@ router.put('/:id/:action', verifyToken, async (req, res) => {
       return res.status(404).json({ error: 'Order not found!' })
     }
     order.orderStatus = req.params.action
+
+    if (req.params.action === 'Out for delivery') {
+      order.pickTime = new Date()
+    }
+    if (req.params.action === 'Delivered') {
+      order.dropTime = new Date()
+    }
+
     await order.save()
 
     return res.status(200).json({ order })
